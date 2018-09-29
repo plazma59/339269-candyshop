@@ -191,9 +191,15 @@ cardHolderInput.addEventListener('invalid', function () {
     cardHolderInput.setCustomValidity('');
   }
 });
+cardForm.addEventListener('input', function () {
+  if (cardNumberInput.checkValidity() && cardDateInput.checkValidity() && cardCvcInput.checkValidity() && cardHolderInput.checkValidity()) {
+    cardForm.querySelector('.payment__card-status').textContent = 'Одобрен';
+  } else {
+    cardForm.querySelector('.payment__card-status').textContent = 'Не определён';
+  }
+});
 cardForm.addEventListener('submit', function (evt) {
   evt.preventDefault();
-  cardForm.querySelector('.payment__card-status').textContent = 'Одобрен';
   okPage.classList.remove('modal--hidden');
 });
 okPage.addEventListener('click', function (evt) {
@@ -215,7 +221,6 @@ cardForm.addEventListener('submit', function (evt) {
       divWrongNumber.style.display = 'none';
     }, 2000);
   } else {
-    cardForm.querySelector('.payment__card-status').textContent = 'Одобрен';
     okPage.classList.remove('modal--hidden');
   }
 });*/
