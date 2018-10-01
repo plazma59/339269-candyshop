@@ -1,7 +1,7 @@
 # Личный проект «Кэндишоп» [![Build status][travis-image]][travis-url]
 
 * Студент: [Дарья Чиннова](https://up.htmlacademy.ru/javascript/15/user/339269).
-* Наставник: `Неизвестно`.
+* Наставник: `Андрей Соколов`.
 
 ---
 

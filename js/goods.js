@@ -112,3 +112,109 @@ basketList.appendChild(basketFragment);
 document.querySelector('.goods__cards').classList.remove('goods__cards--empty');
 document.querySelector('.goods__card-empty').classList.add('visually-hidden');
 
+/* 4. Процесс перетаскивания состоит из трёх этапов: захват элемента, перемещение и отпускание.
+  Пока что можем описать только отпускание, которое будет приводить к изменению значения блоков .range__price.
+  Для этого добавим на каждый пин слайдера .range__btn обработчик события mouseup, который будет согласно ТЗ
+  изменять границы минимальной и максимальной цены. Для начала можно считать что фильтр работает от 0 до 100.
+  Например, если правый пин range__btn--right отстоит от левого края шкалы на 70%, при отпускании мыши,
+  в .range__price--max должно записываться 70.*/
+
+/* var catalogFilterBlock = getComputedStyle(document.querySelector('.catalog__filter'));
+var catalogFilterBlockWidth = parseInt(catalogFilterBlock.width, 10);
+ document.addEventListener('mouseup', function (evt) {
+  var target = evt.target;
+  var rangePrice = function () {
+    return Math.round(target.offsetLeft / catalogFilterBlockWidth * 100);
+  };
+  if (target.classList.contains('range__btn')) {
+    if (target.classList.contains('range__btn--right')) {
+      document.querySelector('.range__price--max').textContent = rangePrice();
+    } else if (target.classList.contains('range__btn--left')) {
+      document.querySelector('.range__price--min').textContent = rangePrice();
+    }
+  }
+  console.log(document.querySelector('.range__price--min').textContent);
+});*/
+
+/* 5.1 Описать полный цикл Drag n Drop для пина слайдера: добавить обработчики событий mousedown, mousemove и mouseup на пины. Обработчики mousemove и mouseup должны добавляться только при вызове обработчика mousedown.
+Обработчик mousemove должен запускать логику изменения положения пина: в нём должны вычисляться новые координаты пина
+на основании смещения, применяться через стили к элементу и записываться в поле заданной цены (с поправкой на то, что
+в это поле записываются координаты середины пина).
+Каждому из ползунков фильтра нужно добавить такое ограничение, чтобы они не могли быть перемещены дальше другого ползунка.
+Левый ползунок не может быть правее правого ползунка и правый не может быть дальше левого.
+Крайние значения для каждого из ползунков нужно определять в начале перетаскивания.
+Расчёт координат пина и их запись в поле должны дублироваться и в обработчике mouseup, потому что в некоторых
+случаях, пользователь может нажать мышь на слайдере, но никуда его не переместить. */
+
+var rangeFilter = document.querySelector('.range__filter');
+var rangeFilterLine = rangeFilter.querySelector('.range__fill-line');
+var priceMin = document.querySelector('.range__price--min');
+var priceMax = document.querySelector('.range__price--max');
+var priceHandleLeft = rangeFilter.querySelector('.range__btn--left');
+var priceHandleRight = rangeFilter.querySelector('.range__btn--right');
+
+var rangeFilterCoords = rangeFilter.getBoundingClientRect();
+var rangeFilterStyle = getComputedStyle(rangeFilter);
+var rangeFilterStyleWidth = parseInt(rangeFilterStyle.width, 10);
+var rangeButtonStyle = getComputedStyle(rangeFilter.querySelector('.range__btn'));
+var rangeButtonWidth = parseInt(rangeButtonStyle.width, 10);
+var allPrices = cardsOfSweets.map(function (el) {
+  return el.price;
+});
+var maxPrice = Math.max.apply(null, allPrices);
+var minPrice = Math.min.apply(null, allPrices);
+
+var getPriceText = function (price, priceHandle) {
+  price.textContent = minPrice + Math.round(parseInt((priceHandle.offsetLeft + priceHandle.offsetWidth / 2), 10) / rangeFilterStyleWidth * (maxPrice - minPrice));
+};
+var getCoords = function (priceHandle, evt) {
+  priceHandle.style.left = evt.pageX - priceHandle.offsetWidth / 2 + 'px';
+  priceHandle.style.top = rangeFilter.offsetTop + 'px';
+};
+
+getPriceText(priceMin, priceHandleLeft);
+getPriceText(priceMax, priceHandleRight);
+
+priceHandleLeft.onmousedown = function (evt) {
+  moveAt(evt);
+  document.body.appendChild(priceHandleLeft);
+  function moveAt(e) {
+    getCoords(priceHandleLeft, e);
+    if (priceHandleLeft.style.left < rangeFilter.offsetLeft + 'px') {
+      priceHandleLeft.style.left = rangeFilterCoords.left + 'px';
+    }
+    if (priceHandleLeft.style.left > priceHandleRight.offsetLeft + 'px') {
+      priceHandleLeft.style.left = priceHandleRight.offsetLeft + 'px';
+    }
+    rangeFilterLine.style.left = priceHandleLeft.style.left;
+  }
+  document.onmousemove = function (event) {
+    moveAt(event);
+  };
+  priceHandleLeft.onmouseup = function () {
+    document.onmousemove = null;
+    priceHandleLeft.onmouseup = null;
+  };
+};
+
+priceHandleRight.onmousedown = function (evt) {
+  moveAt(evt);
+  document.body.appendChild(priceHandleRight);
+  function moveAt(e) {
+    getCoords(priceHandleRight, e);
+    if (priceHandleRight.style.left > rangeFilter.offsetLeft + rangeFilterStyleWidth + 'px') {
+      priceHandleRight.style.left = rangeFilterCoords.right - rangeButtonWidth + 'px';
+    }
+    if (priceHandleRight.style.left < priceHandleLeft.offsetLeft + 'px') {
+      priceHandleRight.style.left = priceHandleLeft.offsetLeft + 'px';
+    }
+    rangeFilterLine.style.right = rangeFilterStyleWidth - (priceHandleRight.offsetLeft) + 'px';
+  }
+  document.onmousemove = function (event) {
+    moveAt(event);
+  };
+  priceHandleRight.onmouseup = function () {
+    document.onmousemove = null;
+    priceHandleRight.onmouseup = null;
+  };
+};
