@@ -147,7 +147,7 @@ var catalogFilterBlockWidth = parseInt(catalogFilterBlock.width, 10);
 Расчёт координат пина и их запись в поле должны дублироваться и в обработчике mouseup, потому что в некоторых
 случаях, пользователь может нажать мышь на слайдере, но никуда его не переместить. */
 
-var rangeFilter = document.querySelector('.range__filter');
+/* var rangeFilter = document.querySelector('.range__filter');
 var rangeFilterLine = rangeFilter.querySelector('.range__fill-line');
 var priceMin = document.querySelector('.range__price--min');
 var priceMax = document.querySelector('.range__price--max');
@@ -219,6 +219,47 @@ priceHandleRight.onmousedown = function (evt) {
     document.onmousemove = null;
     priceHandleRight.onmouseup = null;
   };
+};*/
+
+var slider = document.querySelector('.range__filter');
+var pinLeft = slider.querySelector('.range__btn--left');
+var pinRight = slider.querySelector('.range__btn--right');
+var sliderLine = slider.querySelector('.range__fill-line');
+
+pinLeft.onmousedown = function (e) {
+  var getCoords = function (elem) {
+    var box = elem.getBoundingClientRect();
+    return {
+      top: box.top + pageYOffset,
+      left: box.left + pageXOffset
+    };
+  };
+  var coords = getCoords(pinLeft);
+  var shiftX = e.pageX - coords.left;
+
+  document.body.appendChild(pinLeft);
+  var moveAt = function (evt) {
+    pinLeft.style.left = evt.pageX - shiftX + 'px';
+    pinLeft.style.top = slider.offsetTop + 'px';
+    sliderLine.style.left = pinLeft.style.left;
+    if (pinLeft.style.left > pinRight.offsetLeft + 'px') {
+      pinLeft.style.left = pinRight.offsetLeft + 'px';
+    }
+    if (pinLeft.style.left < slider.offsetLeft + 'px') {
+      pinLeft.style.left = slider.offsetLeft + 'px';
+    }
+  };
+  moveAt(e);
+  document.onmousemove = function (event) {
+    moveAt(event);
+  };
+
+  pinLeft.onmouseup = function () {
+    document.onmousemove = null;
+    pinLeft.onmouseup = null;
+  };
+
+  pinLeft.ondragstart = function () {
+    return false;
+  };
 };
-
-
