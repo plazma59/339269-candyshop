@@ -133,33 +133,18 @@ var catalogFilterBlockWidth = parseInt(catalogFilterBlock.width, 10);
       document.querySelector('.range__price--min').textContent = rangePrice();
     }
   }
-  console.log(document.querySelector('.range__price--min').textContent);
 });*/
 
-/* 5.1 Описать полный цикл Drag n Drop для пина слайдера: добавить обработчики событий mousedown, mousemove и mouseup на пины.
-Обработчики mousemove и mouseup должны добавляться только при вызове обработчика mousedown.
-Обработчик mousemove должен запускать логику изменения положения пина: в нём должны вычисляться новые координаты пина
-на основании смещения, применяться через стили к элементу и записываться в поле заданной цены (с поправкой на то, что
-в это поле записываются координаты середины пина).
-Каждому из ползунков фильтра нужно добавить такое ограничение, чтобы они не могли быть перемещены дальше другого ползунка.
-Левый ползунок не может быть правее правого ползунка и правый не может быть дальше левого.
-Крайние значения для каждого из ползунков нужно определять в начале перетаскивания.
-Расчёт координат пина и их запись в поле должны дублироваться и в обработчике mouseup, потому что в некоторых
-случаях, пользователь может нажать мышь на слайдере, но никуда его не переместить. */
-
-/* var rangeFilter = document.querySelector('.range__filter');
+var rangeFilter = document.querySelector('.range__filter');
 var rangeFilterLine = rangeFilter.querySelector('.range__fill-line');
 var priceMin = document.querySelector('.range__price--min');
 var priceMax = document.querySelector('.range__price--max');
 var priceHandleLeft = rangeFilter.querySelector('.range__btn--left');
 var priceHandleRight = rangeFilter.querySelector('.range__btn--right');
-
 var rangeFilterCoords = rangeFilter.getBoundingClientRect();
-var priceHandleLeftCoords = priceHandleLeft.getBoundingClientRect();
-var priceHandleRightCoords = priceHandleRight.getBoundingClientRect();
 var rangeFilterStyle = getComputedStyle(rangeFilter);
-var rangeFilterStyleWidth = parseInt(rangeFilterStyle.width, 10);
 var rangeButtonStyle = getComputedStyle(rangeFilter.querySelector('.range__btn'));
+var rangeFilterStyleWidth = parseInt(rangeFilterStyle.width, 10);
 var rangeButtonWidth = parseInt(rangeButtonStyle.width, 10);
 var priceHandleCenter = rangeButtonWidth / 2;
 var allPrices = cardsOfSweets.map(function (el) {
@@ -175,91 +160,56 @@ getPriceText(priceMin, priceHandleLeft);
 getPriceText(priceMax, priceHandleRight);
 
 priceHandleLeft.onmousedown = function (evt) {
-  moveAt(evt);
-  document.body.appendChild(priceHandleLeft);
-  function moveAt(e) {
-    priceHandleLeft.style.left = e.pageX - priceHandleCenter + 'px';
-    priceHandleLeft.style.top = rangeFilter.offsetTop + 'px';
-    if (priceHandleLeft.style.left < rangeFilter.offsetLeft + 'px') {
-      priceHandleLeft.style.left = rangeFilterCoords.left + 'px';
+  evt.preventDefault();
+  var priceHandleLeftCoords = priceHandleLeft.getBoundingClientRect();
+  var shiftX = event.clientX - priceHandleLeftCoords.left;
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+  function onMouseMove(event) {
+    var newLeft = event.clientX - shiftX - rangeFilterCoords.left;
+    if (newLeft < 0) {
+      newLeft = 0;
     }
-    if (priceHandleLeft.style.left > priceHandleRight.offsetLeft + 'px') {
-      priceHandleLeft.style.left = priceHandleRightCoords.left + 'px';
+    if (newLeft > priceHandleRight.offsetLeft) {
+      newLeft = priceHandleRight.offsetLeft;
     }
+    priceHandleLeft.style.left = newLeft + 'px';
     rangeFilterLine.style.left = priceHandleLeft.style.left;
     getPriceText(priceMin, priceHandleLeft);
   }
-  document.onmousemove = function (event) {
-    moveAt(event);
-  };
-  priceHandleLeft.onmouseup = function () {
-    document.onmousemove = null;
-    priceHandleLeft.onmouseup = null;
-  };
+  function onMouseUp() {
+    document.removeEventListener('mouseup', onMouseUp);
+    document.removeEventListener('mousemove', onMouseMove);
+  }
 };
+priceHandleLeft.ondragstart = function () {
+  return false;
+};
+
 priceHandleRight.onmousedown = function (evt) {
-  moveAt(evt);
-  document.body.appendChild(priceHandleRight);
-  function moveAt(e) {
-    priceHandleRight.style.left = e.pageX - priceHandleCenter + 'px';
-    priceHandleRight.style.top = rangeFilter.offsetTop + 'px';
-    if (priceHandleRight.style.left > rangeFilter.offsetLeft + rangeFilterStyleWidth + 'px') {
-      priceHandleRight.style.left = rangeFilterCoords.right - rangeButtonWidth + 'px';
+  evt.preventDefault();
+  var priceHandleRightCoords = priceHandleRight.getBoundingClientRect();
+  var shiftX = event.clientX - priceHandleRightCoords.left;
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+  function onMouseMove(event) {
+    var newLeft = event.clientX - shiftX - rangeFilterCoords.left;
+    var rightEdge = rangeFilter.offsetWidth - priceHandleRight.offsetWidth;
+    if (newLeft > rightEdge) {
+      newLeft = rightEdge;
     }
-    if (priceHandleRight.style.left < priceHandleLeft.offsetLeft + 'px') {
-      priceHandleRight.style.left = priceHandleLeftCoords.left + 'px';
+    if (newLeft < priceHandleLeft.offsetLeft) {
+      newLeft = priceHandleLeft.offsetLeft;
     }
-    rangeFilterLine.style.right = (rangeFilterStyleWidth - priceHandleRight.offsetLeft) + 'px';
+    priceHandleRight.style.left = newLeft + 'px';
+    rangeFilterLine.style.right = rangeFilter.offsetWidth - priceHandleRight.offsetLeft + 'px';
     getPriceText(priceMax, priceHandleRight);
   }
-  document.onmousemove = function (event) {
-    moveAt(event);
-  };
-  priceHandleRight.onmouseup = function () {
-    document.onmousemove = null;
-    priceHandleRight.onmouseup = null;
-  };
-};*/
-
-var slider = document.querySelector('.range__filter');
-var pinLeft = slider.querySelector('.range__btn--left');
-var pinRight = slider.querySelector('.range__btn--right');
-var sliderLine = slider.querySelector('.range__fill-line');
-
-pinLeft.onmousedown = function (e) {
-  var getCoords = function (elem) {
-    var box = elem.getBoundingClientRect();
-    return {
-      top: box.top + pageYOffset,
-      left: box.left + pageXOffset
-    };
-  };
-  var coords = getCoords(pinLeft);
-  var shiftX = e.pageX - coords.left;
-
-  document.body.appendChild(pinLeft);
-  var moveAt = function (evt) {
-    pinLeft.style.left = evt.pageX - shiftX + 'px';
-    pinLeft.style.top = slider.offsetTop + 'px';
-    sliderLine.style.left = pinLeft.style.left;
-    if (pinLeft.style.left > pinRight.offsetLeft + 'px') {
-      pinLeft.style.left = pinRight.offsetLeft + 'px';
-    }
-    if (pinLeft.style.left < slider.offsetLeft + 'px') {
-      pinLeft.style.left = slider.offsetLeft + 'px';
-    }
-  };
-  moveAt(e);
-  document.onmousemove = function (event) {
-    moveAt(event);
-  };
-
-  pinLeft.onmouseup = function () {
-    document.onmousemove = null;
-    pinLeft.onmouseup = null;
-  };
-
-  pinLeft.ondragstart = function () {
-    return false;
-  };
+  function onMouseUp() {
+    document.removeEventListener('mouseup', onMouseUp);
+    document.removeEventListener('mousemove', onMouseMove);
+  }
+};
+priceHandleRight.ondragstart = function () {
+  return false;
 };
