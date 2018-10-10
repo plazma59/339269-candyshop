@@ -44,9 +44,9 @@
   };
 
   var cardsOfSweets = getDescription(window.util.NAMES_OF_SWEETS, window.util.PICTURES_OF_SWEETS, window.util.CONTENT_OF_SWEETS, window.util.CARDS_OF_SWEETS_LENGTH);
-  // var goodsInBasket = getDescription(window.util.NAMES_OF_SWEETS, window.util.PICTURES_OF_SWEETS, window.util.CONTENT_OF_SWEETS, window.util.GOODS_IN_BASKET_LENGTH);
-
+  var goodsInBasket = getDescription(window.util.NAMES_OF_SWEETS, window.util.PICTURES_OF_SWEETS, window.util.CONTENT_OF_SWEETS, window.util.GOODS_IN_BASKET_LENGTH);
   window.data = {
     cardsOfSweets: cardsOfSweets,
+    goodsInBasket: goodsInBasket
   };
 }());

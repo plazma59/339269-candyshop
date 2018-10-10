@@ -1,12 +1,72 @@
 'use strict';
 (function () {
   document.querySelector('.catalog__cards').classList.remove('catalog__cards--load');
-  document.querySelector('.catalog__load').classList.add('visually-hidden');
-  var cardList = document.querySelector('.catalog__cards');
-  var cardFragment = document.createDocumentFragment();
-  var cardTemplate = document.querySelector('#card').content.querySelector('.catalog__card');
 
-  window.data.cardsOfSweets.forEach(function (sweet) {
+  var cardList = document.querySelector('.catalog__cards');
+  var cardsOfSweets = [];
+
+  var successHandler = function (cards) {
+    document.querySelector('.catalog__load').classList.add('visually-hidden');
+    var cardFragment = document.createDocumentFragment();
+    var cardTemplate = document.querySelector('#card').content.querySelector('.catalog__card');
+    for (var i = 0; i < cards.length; i++) {
+      var sweetElement = cardTemplate.cloneNode(true);
+      if (cards[i].amount > 5) {
+        sweetElement.classList.add('card--in-stock');
+      } else if (cards[i].amount > 0) {
+        sweetElement.classList.add('card--little');
+      } else {
+        sweetElement.classList.add('card--soon');
+      }
+      sweetElement.querySelector('.card__title').textContent = cards[i].name;
+      sweetElement.querySelector('img').src = '../candyShop/img/cards/' + cards[i].picture;
+      sweetElement.querySelector('.card__price').childNodes[0].textContent = cards[i].price + ' ';
+      sweetElement.querySelector('.card__weight').textContent = '/ ' + cards[i].weight + ' Г';
+      var elementRating = sweetElement.querySelector('.stars__rating');
+      elementRating.classList.remove('stars__rating--five');
+      elementRating.classList.add('stars__rating--one');
+      if (cards[i].rating.value === 1) {
+        elementRating.classList.add('stars__rating--one');
+      } else if (cards[i].rating.value === 2) {
+        elementRating.classList.add('stars__rating--two');
+      } else if (cards[i].rating.value === 3) {
+        elementRating.classList.add('stars__rating--three');
+      } else if (cards[i].rating.value === 4) {
+        elementRating.classList.add('stars__rating--four');
+      } else {
+        elementRating.classList.add('stars__rating--five');
+      }
+      sweetElement.querySelector('.star__count').textContent = cards[i].rating.number;
+      if (cards[i].nutritionFacts.sugar) {
+        sweetElement.querySelector('.card__characteristic').textContent = 'Содержит сахар. ' + cards[i].nutritionFacts.energy + ' ккал';
+      } else {
+        sweetElement.querySelector('.card__characteristic').textContent = 'Без сахара. ' + cards[i].nutritionFacts.energy + ' ккал';
+      }
+      sweetElement.querySelector('.card__composition-list').textContent = cards[i].nutritionFacts.contents;
+      sweetElement.querySelector('.card__btn').dataset.indexNumber = i;
+      cardFragment.appendChild(sweetElement);
+    }
+    cardList.appendChild(cardFragment);
+    cardsOfSweets = cards.slice(0);
+  };
+
+  var errorHandler = function (errorMessage) {
+    var node = document.createElement('div');
+    node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
+    node.style.position = 'absolute';
+    node.style.left = 0;
+    node.style.right = 0;
+    node.style.fontSize = '30px';
+
+    node.textContent = errorMessage;
+    document.body.insertAdjacentElement('afterbegin', node);
+  };
+
+  window.backend(successHandler, errorHandler);
+  console.log(cardList);
+  console.log(cardsOfSweets);
+
+  /* window.data.cardsOfSweets.forEach(function (sweet) {
     var sweetElement = cardTemplate.cloneNode(true);
     if (sweet.amount > 5) {
       sweetElement.classList.add('card--in-stock');
@@ -45,7 +105,7 @@
   });
   cardList.appendChild(cardFragment);
 
-  /* var basketList = document.querySelector('.goods__cards');
+  var basketList = document.querySelector('.goods__cards');
   var basketFragment = document.createDocumentFragment();
   var basketTemplate = document.querySelector('#card-order').content.querySelector('.goods_card');
   for (var j = 0; j < goodsInBasket.length; j++) {
@@ -58,10 +118,6 @@
   basketList.appendChild(basketFragment);*/
 
   document.querySelector('.goods__cards').classList.remove('goods__cards--empty');
-  document.querySelector('.goods__card-empty').classList.add('visually-hidden');
-
-  document.querySelector('.catalog__load').classList.remove('visually-hidden');
-  document.querySelector('.goods__card-empty').classList.remove('visually-hidden');
 
   cardList.addEventListener('click', function (evt) {
     var target = evt.target;
