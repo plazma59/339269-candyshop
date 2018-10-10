@@ -47,53 +47,53 @@ var getDescription = function (names, pictures, content, length) {
   }
   return cards;
 };
-
 // var cardsOfSweets = getDescription(NAMES_OF_SWEETS, PICTURES_OF_SWEETS, CONTENT_OF_SWEETS, CARDS_OF_SWEETS_LENGTH);
 var cardList = document.querySelector('.catalog__cards');
+var cardsOfSweets = [];
 
-var successHandler = function (cardsOfSweets) {
+var successHandler = function (cards) {
+  document.querySelector('.catalog__load').classList.add('visually-hidden');
   var cardFragment = document.createDocumentFragment();
   var cardTemplate = document.querySelector('#card').content.querySelector('.catalog__card');
-  for (var i = 0; i < cardsOfSweets.length; i++) {
+  for (var i = 0; i < cards.length; i++) {
     var sweetElement = cardTemplate.cloneNode(true);
-    if (cardsOfSweets[i].amount > 5) {
+    if (cards[i].amount > 5) {
       sweetElement.classList.add('card--in-stock');
-    } else if (cardsOfSweets[i].amount > 0) {
+    } else if (cards[i].amount > 0) {
       sweetElement.classList.add('card--little');
     } else {
       sweetElement.classList.add('card--soon');
     }
-    sweetElement.querySelector('.card__title').textContent = cardsOfSweets[i].name;
-    sweetElement.querySelector('img').src = '../candyShop/img/cards/' + cardsOfSweets[i].picture;
-    sweetElement.querySelector('.card__price').childNodes[0].textContent = cardsOfSweets[i].price + ' ';
-    sweetElement.querySelector('.card__weight').textContent = '/ ' + cardsOfSweets[i].weight + ' Г';
+    sweetElement.querySelector('.card__title').textContent = cards[i].name;
+    sweetElement.querySelector('img').src = '../candyShop/img/cards/' + cards[i].picture;
+    sweetElement.querySelector('.card__price').childNodes[0].textContent = cards[i].price + ' ';
+    sweetElement.querySelector('.card__weight').textContent = '/ ' + cards[i].weight + ' Г';
     var elementRating = sweetElement.querySelector('.stars__rating');
     elementRating.classList.remove('stars__rating--five');
     elementRating.classList.add('stars__rating--one');
-    if (cardsOfSweets[i].rating.value === 1) {
+    if (cards[i].rating.value === 1) {
       elementRating.classList.add('stars__rating--one');
-    } else if (cardsOfSweets[i].rating.value === 2) {
+    } else if (cards[i].rating.value === 2) {
       elementRating.classList.add('stars__rating--two');
-    } else if (cardsOfSweets[i].rating.value === 3) {
+    } else if (cards[i].rating.value === 3) {
       elementRating.classList.add('stars__rating--three');
-    } else if (cardsOfSweets[i].rating.value === 4) {
+    } else if (cards[i].rating.value === 4) {
       elementRating.classList.add('stars__rating--four');
     } else {
       elementRating.classList.add('stars__rating--five');
     }
-    sweetElement.querySelector('.star__count').textContent = cardsOfSweets[i].rating.number;
-    if (cardsOfSweets[i].nutritionFacts.sugar) {
-      sweetElement.querySelector('.card__characteristic').textContent = 'Содержит сахар. ' + cardsOfSweets[i].nutritionFacts.energy + ' ккал';
+    sweetElement.querySelector('.star__count').textContent = cards[i].rating.number;
+    if (cards[i].nutritionFacts.sugar) {
+      sweetElement.querySelector('.card__characteristic').textContent = 'Содержит сахар. ' + cards[i].nutritionFacts.energy + ' ккал';
     } else {
-      sweetElement.querySelector('.card__characteristic').textContent = 'Без сахара. ' + cardsOfSweets[i].nutritionFacts.energy + ' ккал';
+      sweetElement.querySelector('.card__characteristic').textContent = 'Без сахара. ' + cards[i].nutritionFacts.energy + ' ккал';
     }
-    sweetElement.querySelector('.card__composition-list').textContent = cardsOfSweets[i].nutritionFacts.contents;
+    sweetElement.querySelector('.card__composition-list').textContent = cards[i].nutritionFacts.contents;
     sweetElement.querySelector('.card__btn').dataset.indexNumber = i;
     cardFragment.appendChild(sweetElement);
   }
   cardList.appendChild(cardFragment);
-  return cardsOfSweets;
-  // userDialog.querySelector('.setup-similar').classList.remove('hidden');
+  cardsOfSweets = cards.slice(0);
 };
 
 var errorHandler = function (errorMessage) {
@@ -109,12 +109,10 @@ var errorHandler = function (errorMessage) {
 };
 
 window.backend(successHandler, errorHandler);
+console.log(cardList);
+console.log(cardsOfSweets);
 
 var goodsInBasket = getDescription(NAMES_OF_SWEETS, PICTURES_OF_SWEETS, CONTENT_OF_SWEETS, GOODS_IN_BASKET_LENGTH);
-
-
-document.querySelector('.catalog__cards').classList.remove('catalog__cards--load');
-document.querySelector('.catalog__load').classList.add('visually-hidden');
 
 /* for (var i = 0; i < cardsOfSweets.length; i++) {
   var sweetElement = cardTemplate.cloneNode(true);
@@ -379,9 +377,12 @@ cardForm.addEventListener('input', function () {
     cardForm.querySelector('.payment__card-status').textContent = 'Не определён';
   }
 });
+
 cardForm.addEventListener('submit', function (evt) {
+  window.upload(new FormData(cardForm), function (response) {
+    okPage.classList.remove('modal--hidden');
+  });
   evt.preventDefault();
-  okPage.classList.remove('modal--hidden');
 });
 okPage.addEventListener('click', function (evt) {
   var target = evt.target;
