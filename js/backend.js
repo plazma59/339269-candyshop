@@ -1,18 +1,21 @@
 'use strict';
 
 (function () {
-  var URL = 'https://js.dump.academy/candyshop/data';
-  window.backend = function (onLoad, onError) {
+  var urlGet = 'https://js.dump.academy/candyshop/data';
+  var cardsOfSweets = [];
+  var getGoods = function (onLoad, onError) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
 
     xhr.addEventListener('load', function () {
       if (xhr.status === 200) {
         onLoad(xhr.response);
+        cardsOfSweets = xhr.response;
       } else {
         onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
       }
     });
+
     xhr.addEventListener('error', function () {
       onError('Произошла ошибка соединения');
     });
@@ -22,15 +25,13 @@
 
     xhr.timeout = 10000;
 
-    xhr.open('GET', URL);
+    xhr.open('GET', urlGet);
     xhr.send();
   };
-})();
 
-(function () {
-  var URL = 'https://js.dump.academy/candyshop';
+  var urlPost = 'https://js.dump.academy/candyshop';
 
-  window.upload = function (data, onLoad) {
+  var postInfo = function (data, onLoad) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
 
@@ -38,7 +39,14 @@
       onLoad(xhr.response);
     });
 
-    xhr.open('POST', URL);
+    xhr.open('POST', urlPost);
     xhr.send(data);
   };
+
+  window.backend = {
+    getGoods: getGoods,
+    postInfo: postInfo,
+    cardsOfSweets: cardsOfSweets
+  };
 })();
+

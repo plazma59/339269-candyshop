@@ -3,7 +3,8 @@
   document.querySelector('.catalog__cards').classList.remove('catalog__cards--load');
 
   var cardList = document.querySelector('.catalog__cards');
-  var cardsOfSweets = [];
+  // var cardFragment = document.createDocumentFragment();
+  // var cardTemplate = document.querySelector('#card').content.querySelector('.catalog__card');
 
   var successHandler = function (cards) {
     document.querySelector('.catalog__load').classList.add('visually-hidden');
@@ -47,7 +48,8 @@
       cardFragment.appendChild(sweetElement);
     }
     cardList.appendChild(cardFragment);
-    cardsOfSweets = cards.slice(0);
+    window.backend.cardsOfSweets = cards.slice(0);
+    return cards;
   };
 
   var errorHandler = function (errorMessage) {
@@ -62,9 +64,8 @@
     document.body.insertAdjacentElement('afterbegin', node);
   };
 
-  window.backend(successHandler, errorHandler);
-  console.log(cardList);
-  console.log(cardsOfSweets);
+  window.backend.getGoods(successHandler, errorHandler);
+  console.log(window.backend.cardsOfSweets);
 
   /* window.data.cardsOfSweets.forEach(function (sweet) {
     var sweetElement = cardTemplate.cloneNode(true);
