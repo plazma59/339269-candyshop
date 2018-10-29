@@ -2,7 +2,6 @@
 
 (function () {
   var urlGet = 'https://js.dump.academy/candyshop/data';
-  var cardsOfSweets = [];
   var getGoods = function (onLoad, onError) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
@@ -10,7 +9,6 @@
     xhr.addEventListener('load', function () {
       if (xhr.status === 200) {
         onLoad(xhr.response);
-        cardsOfSweets = xhr.response;
       } else {
         onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
       }
@@ -46,7 +44,6 @@
   window.backend = {
     getGoods: getGoods,
     postInfo: postInfo,
-    cardsOfSweets: cardsOfSweets
   };
 })();
 

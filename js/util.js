@@ -6,12 +6,16 @@
   var CONTENT_OF_SWEETS = ['молоко', 'сливки', 'вода', 'пищевой краситель', 'патока', 'ароматизатор бекона', 'ароматизатор свинца', 'ароматизатор дуба, идентичный натуральному', 'ароматизатор картофеля', 'лимонная кислота', 'загуститель', 'эмульгатор', 'консервант: сорбат калия', 'посолочная смесь: соль, нитрит натрия', 'ксилит', 'карбамид', 'вилларибо', 'виллабаджо'];
   var CARDS_OF_SWEETS_LENGTH = 26;
   var GOODS_IN_BASKET_LENGTH = 3;
+  var GOODS = [];
+  var KINDS = ['Мороженое', 'Газировка', 'Жевательная резинка', 'Мармелад', 'Зефир'];
 
   window.util = {
     NAMES_OF_SWEETS: NAMES_OF_SWEETS,
     PICTURES_OF_SWEETS: PICTURES_OF_SWEETS,
     CONTENT_OF_SWEETS: CONTENT_OF_SWEETS,
     CARDS_OF_SWEETS_LENGTH: CARDS_OF_SWEETS_LENGTH,
-    GOODS_IN_BASKET_LENGTH: GOODS_IN_BASKET_LENGTH
+    GOODS_IN_BASKET_LENGTH: GOODS_IN_BASKET_LENGTH,
+    GOODS: GOODS,
+    KINDS: KINDS
   };
 }());
