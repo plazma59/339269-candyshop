@@ -1,8 +1,7 @@
 'use strict';
 (function () {
   var successHandler = function (cards) {
-    window.util.GOODS = cards;
-    window.catalog.createCatalog(window.util.GOODS);
+    window.catalog.createCatalog(cards);
     window.catalog.createBasket(cards);
     window.slider.createSlider(cards);
     window.filter.createFilters(cards);

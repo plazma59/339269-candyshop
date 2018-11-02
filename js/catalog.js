@@ -3,7 +3,13 @@
   document.querySelector('.catalog__cards').classList.remove('catalog__cards--load');
 
   var cardList = document.querySelector('.catalog__cards');
+  var deleteCatalog = function () {
+    while (cardList.children[1]) {
+      cardList.removeChild(cardList.children[1]);
+    }
+  };
   var createCatalog = function (cards) {
+    window.catalog.deleteCatalog();
     document.querySelector('.catalog__load').classList.add('visually-hidden');
     var cardFragment = document.createDocumentFragment();
     var cardTemplate = document.querySelector('#card').content.querySelector('.catalog__card');
@@ -110,6 +116,7 @@
 
   window.catalog = {
     createCatalog: createCatalog,
-    createBasket: createBasket
+    createBasket: createBasket,
+    deleteCatalog: deleteCatalog
   };
 }());
