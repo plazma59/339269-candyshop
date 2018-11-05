@@ -8,7 +8,6 @@
   var GOODS_IN_BASKET_LENGTH = 3;
   var GOODS = [];
   var KINDS = ['Мороженое', 'Газировка', 'Жевательная резинка', 'Мармелад', 'Зефир'];
-  var QUALITIES = ['Без сахара', 'Вегетарианское', 'Безглютеновое'];
 
   window.util = {
     NAMES_OF_SWEETS: NAMES_OF_SWEETS,
@@ -17,7 +16,6 @@
     CARDS_OF_SWEETS_LENGTH: CARDS_OF_SWEETS_LENGTH,
     GOODS_IN_BASKET_LENGTH: GOODS_IN_BASKET_LENGTH,
     GOODS: GOODS,
-    KINDS: KINDS,
-    QUALITIES: QUALITIES
+    KINDS: KINDS
   };
 }());

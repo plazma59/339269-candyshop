@@ -48,9 +48,20 @@
       }
       sweetElement.querySelector('.card__composition-list').textContent = cards[i].nutritionFacts.contents;
       sweetElement.querySelector('.card__btn').dataset.indexNumber = i;
+      sweetElement.querySelector('.card__btn-favorite').dataset.indexNumber = i;
+      window.filter.favouriteList.forEach(function (el) {
+        if (el === cards[i]) {
+          sweetElement.querySelector('.card__btn-favorite').classList.add('card__btn-favorite--selected');
+        }
+      });
       cardFragment.appendChild(sweetElement);
     }
-    cardList.appendChild(cardFragment);
+    if (cards.length === 0) {
+      var emptyTemplate = document.querySelector('#empty-filters').content.querySelector('.catalog__empty-filter').cloneNode(true);
+      cardList.appendChild(emptyTemplate);
+    } else {
+      cardList.appendChild(cardFragment);
+    }
   };
   document.querySelector('.goods__cards').classList.remove('goods__cards--empty');
 
