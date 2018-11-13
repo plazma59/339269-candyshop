@@ -3,9 +3,6 @@
   var quantity = document.querySelectorAll('.input-btn__item-count');
   var checkBoxes = document.querySelector('.catalog__sidebar').querySelectorAll('.input-btn__input');
   var favouriteList = [];
-  var compareGoodsPopular = function (goodA, goodB) {
-    return goodB.rating.number - goodA.rating.number;
-  };
   var compareGoodsMaxPrice = function (goodA, goodB) {
     return goodB.price - goodA.price;
   };
@@ -13,13 +10,15 @@
     return goodA.price - goodB.price;
   };
   var compareGoodsRating = function (goodA, goodB) {
+    if (goodB.rating.value === goodA.rating.value) {
+      return goodB.rating.number - goodA.rating.number;
+    }
     return goodB.rating.value - goodA.rating.value;
   };
   var createFilters = function (cards) {
     var filterCards = [];
     var availableList = [];
-    cards.sort(compareGoodsPopular);
-    window.catalog.createCatalog(window.slider.createSlider(cards));
+    window.debounce.removeDebounce(window.catalog.createCatalog(window.slider.createSlider(cards)));
 
     window.util.KINDS.forEach(function (elem) {
       var kind = cards.filter(function (el) {
@@ -86,21 +85,19 @@
 
     var filterSorting = document.querySelectorAll('.catalog__filter')[4].querySelectorAll('.input-btn__input');
     var sortCatalog = function (cards2) {
-      if (filterSorting[0].checked) {
-        cards2.sort(compareGoodsPopular);
-      } else if (filterSorting[1].checked) {
+      if (filterSorting[1].checked) {
         cards2.sort(compareGoodsMaxPrice);
       } else if (filterSorting[2].checked) {
         cards2.sort(compareGoodsMinPrice);
       } else if (filterSorting[3].checked) {
         cards2.sort(compareGoodsRating);
       }
-      window.catalog.createCatalog(cards2);
+      window.debounce.removeDebounce(window.catalog.createCatalog(cards2));
     };
 
     var createFilterCatalog = function () {
       filterCards = [];
-      window.catalog.createCatalog(window.slider.createSlider(cards));
+      window.debounce.removeDebounce(window.catalog.createCatalog(window.slider.createSlider(cards)));
       sortCatalog(window.slider.createSlider(cards));
       var createKinds = function () {
         for (var j = 0; j <= window.util.KINDS.length; j++) {
@@ -126,7 +123,7 @@
         extra.forEach(function (el) {
           filterCards.splice(filterCards.indexOf(el), 1);
         });
-        window.catalog.createCatalog(filterCards);
+        window.debounce.removeDebounce(window.catalog.createCatalog(filterCards));
         sortCatalog(filterCards);
       };
 
@@ -147,26 +144,24 @@
             return !el.nutritionFacts.gluten;
           });
         }
-        window.catalog.createCatalog(array);
+        window.debounce.removeDebounce(window.catalog.createCatalog(array));
         sortCatalog(array);
       };
 
-      var createFavourites = function () {
+      var createFavouritesOrAvailable = function () {
+        quantity[8].parentNode.querySelector('.input-btn__input').type = 'radio';
+        quantity[9].parentNode.querySelector('.input-btn__input').type = 'radio';
         if (quantity[8].parentNode.querySelector('.input-btn__input').checked) {
-          window.catalog.createCatalog(favouriteList);
+          window.debounce.removeDebounce(window.catalog.createCatalog(favouriteList));
           sortCatalog(favouriteList);
-        }
-      };
-
-      var createAvailable = function () {
-        availableList = [];
-        cards.forEach(function (el) {
-          if (el.amount !== 0) {
-            availableList.push(el);
-          }
-        });
-        if (quantity[9].parentNode.querySelector('.input-btn__input').checked) {
-          window.catalog.createCatalog(availableList);
+        } else if (quantity[9].parentNode.querySelector('.input-btn__input').checked) {
+          availableList = [];
+          cards.forEach(function (el) {
+            if (el.amount !== 0) {
+              availableList.push(el);
+            }
+          });
+          window.debounce.removeDebounce(window.catalog.createCatalog(availableList));
           sortCatalog(availableList);
         }
       };
@@ -177,8 +172,7 @@
       } else {
         createQualities(filterCards);
       }
-      createFavourites();
-      createAvailable();
+      createFavouritesOrAvailable();
     };
 
     var createCatalogAgain = function (evt) {
@@ -193,16 +187,16 @@
         evt.preventDefault();
         checkBoxes.forEach(function (el) {
           el.checked = false;
-          filterSorting[0].checked = true;
         });
-        window.catalog.createCatalog(cards);
+        filterSorting[0].checked = true;
+        window.debounce.removeDebounce(window.catalog.createCatalog(cards));
         sortCatalog(cards);
         filterCards = [];
         availableList = [];
       }
       if (count === quantity.length) {
-        window.catalog.createCatalog(window.slider.createSlider(cards));
-        sortCatalog(window.slider.createSlider(cards));
+        window.debounce.removeDebounce(window.catalog.createCatalog(cards));
+        sortCatalog(cards);
         filterCards = [];
         availableList = [];
       }

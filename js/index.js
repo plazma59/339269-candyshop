@@ -2,9 +2,8 @@
 (function () {
   var successHandler = function (cards) {
     window.catalog.createCatalog(cards);
-    window.catalog.createBasket(cards);
-    // window.slider.createSlider(cards);
     window.filter.createFilters(cards);
+    window.catalog.createBasket(cards);
   };
 
   var errorHandler = function (errorMessage) {

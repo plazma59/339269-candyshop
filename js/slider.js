@@ -12,7 +12,6 @@
   var rangeButtonStyle = getComputedStyle(rangeFilter.querySelector('.range__btn'));
   var rangeFilterStyleWidth = parseInt(rangeFilterStyle.width, 10);
   var rangeButtonWidth = parseInt(rangeButtonStyle.width, 10);
-  var priceHandleCenter = rangeButtonWidth / 2;
 
   var createSlider = function (cards) {
     var allPrices = cards.map(function (el) {
@@ -26,7 +25,7 @@
       return price.textContent;
     };
     var getPriceTextMax = function (price, priceHandle) {
-      price.textContent = minPrice + Math.round(parseInt((priceHandle.offsetLeft + priceHandleCenter), 10) / rangeFilterStyleWidth * (maxPrice - minPrice));
+      price.textContent = minPrice + Math.round(parseInt((priceHandle.offsetLeft), 10) / rangeFilterStyleWidth * (maxPrice - minPrice));
       return price.textContent;
     };
     getPriceTextMin(priceMin, priceHandleLeft);
@@ -106,7 +105,7 @@
         priceMax.textContent = maxPrice;
         priceHandleLeft.style.left = 0 + 'px';
         rangeFilterLine.style.left = priceHandleLeft.style.left;
-        priceHandleRight.style.left = rangeFilterStyleWidth - priceHandleCenter + 'px';
+        priceHandleRight.style.left = rangeFilterStyleWidth + 'px';
         rangeFilterLine.style.right = rangeFilter.offsetWidth - priceHandleRight.offsetLeft + 'px';
         document.querySelector('.range__count').textContent = '(' + cards.length + ')';
       }
