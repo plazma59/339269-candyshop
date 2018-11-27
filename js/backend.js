@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-  var urlGet = 'https://js.dump.academy/candyshop/data';
   var getGoods = function (onLoad, onError) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
@@ -23,21 +22,23 @@
 
     xhr.timeout = 10000;
 
-    xhr.open('GET', urlGet);
+    xhr.open('GET', window.util.URL_GET);
     xhr.send();
   };
 
-  var urlPost = 'https://js.dump.academy/candyshop';
-
-  var postInfo = function (data, onLoad) {
+  var postInfo = function (data, onLoad, onError) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
 
     xhr.addEventListener('load', function () {
-      onLoad(xhr.response);
+      if (xhr.status === 200) {
+        onLoad();
+      } else {
+        onError();
+      }
     });
 
-    xhr.open('POST', urlPost);
+    xhr.open('POST', window.util.URL_POST);
     xhr.send(data);
   };
 

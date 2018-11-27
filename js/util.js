@@ -9,6 +9,9 @@
   var GOODS = [];
   var KINDS = ['Мороженое', 'Газировка', 'Жевательная резинка', 'Мармелад', 'Зефир'];
   var DEBOUNCE_INTERVAL = 5000;
+  var ESC = 27;
+  var URL_GET = 'https://js.dump.academy/candyshop/data';
+  var URL_POST = 'https://js.dump.academy/candyshop';
 
   window.util = {
     NAMES_OF_SWEETS: NAMES_OF_SWEETS,
@@ -18,6 +21,9 @@
     GOODS_IN_BASKET_LENGTH: GOODS_IN_BASKET_LENGTH,
     GOODS: GOODS,
     KINDS: KINDS,
-    DEBOUNCE_INTERVAL: DEBOUNCE_INTERVAL
+    DEBOUNCE_INTERVAL: DEBOUNCE_INTERVAL,
+    ESC: ESC,
+    URL_GET: URL_GET,
+    URL_POST: URL_POST
   };
 }());

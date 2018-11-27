@@ -1,7 +1,7 @@
 'use strict';
 (function () {
   document.querySelector('.catalog__cards').classList.remove('catalog__cards--load');
-  var fieldSets = document.querySelectorAll('fieldSet');
+  var fieldSets = document.querySelectorAll('fieldset');
   var cardList = document.querySelector('.catalog__cards');
   var deleteCatalog = function () {
     while (cardList.children[1]) {

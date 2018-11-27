@@ -195,8 +195,8 @@
         availableList = [];
       }
       if (count === quantity.length) {
-        window.debounce.removeDebounce(window.catalog.createCatalog(cards));
-        sortCatalog(cards);
+        window.debounce.removeDebounce(window.catalog.createCatalog(window.slider.createSlider(cards)));
+        sortCatalog(window.slider.createSlider(cards));
         filterCards = [];
         availableList = [];
       }
